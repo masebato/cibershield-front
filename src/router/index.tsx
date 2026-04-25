@@ -1,6 +1,7 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
 import DashboardLayout from '../layouts/DashboardLayout';
+import Register from '../pages/Register';
 import Login from '../pages/Login';
 import Dashboard from '../pages/Dashboard';
 import Placeholder from '../pages/Placeholder';
@@ -27,6 +28,14 @@ export const router = createBrowserRouter([
         <Login />
       </GuestRoute>
     ),
+  },
+  {
+    path: '/register',
+    element: (
+      <GuestRoute>
+        <Register />
+      </GuestRoute>
+    )
   },
   {
     path: '/',

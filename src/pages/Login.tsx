@@ -28,15 +28,10 @@ export default function Login() {
 
   return (
     <AuthLayout>
-      <Card
-        className="animate-fade-in-up w-full"
-        style={{ animationDelay: '0.1s', opacity: 0 }}
-      >
+      <Card className="animate-fade-in-up w-full" style={{ animationDelay: '0.1s', opacity: 0 }}>
         <div className="mb-6">
-          <h1 className="text-xl font-semibold text-slate-100">Sign in</h1>
-          <p className="text-sm text-slate-400 mt-1">
-            Enter your credentials to access the platform
-          </p>
+          <h1 className="text-xl font-semibold text-slate-100">Inicio de sesión</h1>
+          <p className="text-sm text-slate-400 mt-1">Ingresa tus credenciales de autenticación</p>
         </div>
 
         {error && (
@@ -48,7 +43,7 @@ export default function Login() {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <Input
-            label="Email address"
+            label="Correo electronico"
             type="email"
             placeholder="analyst@company.com"
             value={email}
@@ -59,7 +54,7 @@ export default function Login() {
           />
 
           <Input
-            label="Password"
+            label="Contraseña"
             type={showPassword ? 'text' : 'password'}
             placeholder="••••••••"
             value={password}
@@ -92,13 +87,19 @@ export default function Login() {
                 <div className="w-4 h-4 rounded border border-slate-600 bg-slate-800 peer-checked:bg-cyan-500 peer-checked:border-cyan-500 transition-colors flex items-center justify-center">
                   {rememberMe && (
                     <svg className="w-2.5 h-2.5 text-slate-900" fill="none" viewBox="0 0 10 8">
-                      <path d="M1 4l3 3 5-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                      <path
+                        d="M1 4l3 3 5-6"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
                     </svg>
                   )}
                 </div>
               </div>
               <span className="text-sm text-slate-400 group-hover:text-slate-300 transition-colors">
-                Remember me
+                Recuerdame
               </span>
             </label>
 
@@ -107,22 +108,23 @@ export default function Login() {
               type="button"
               className="text-sm text-cyan-400 hover:text-cyan-300 transition-colors"
             >
-              Forgot password?
+              Olvidaste tu contraseña?
             </button>
           </div>
 
-          <Button
-            type="submit"
-            size="lg"
-            isLoading={isLoading}
-            className="mt-2 w-full"
-          >
-            {isLoading ? 'Authenticating...' : 'Sign in'}
+          <Button type="submit" size="lg" isLoading={isLoading} className="mt-2 w-full">
+            {isLoading ? 'Verificando...' : 'Iniciar sesión'}
           </Button>
         </form>
 
-        <p className="mt-5 text-center text-xs text-slate-600">
-          Demo: any email + password <span className="text-slate-500 font-mono">admin123</span>
+        <p className="mt-5 text-center text-xs text-slate-400">
+          ¿No estas registrado?{' '}
+          <span
+            className="text-blue-700 underline cursor-pointer"
+            onClick={() => navigate('/register')}
+          >
+            Regístrate
+          </span>
         </p>
       </Card>
     </AuthLayout>
