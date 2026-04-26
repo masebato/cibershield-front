@@ -21,11 +21,11 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { label: 'Dashboard', to: '/dashboard', icon: LayoutDashboard },
-  { label: 'Threats', to: '/threats', icon: AlertTriangle },
-  { label: 'Assets', to: '/assets', icon: Server },
-  { label: 'Reports', to: '/reports', icon: FileBarChart2 },
-  { label: 'Settings', to: '/settings', icon: Settings },
+  { label: 'Inicio', to: '/dashboard', icon: LayoutDashboard },
+  { label: 'Alertas', to: '/threats', icon: AlertTriangle },
+  { label: 'Activos', to: '/assets', icon: Server },
+  { label: 'Reportes', to: '/reports', icon: FileBarChart2 },
+  { label: 'Mi perfil', to: '/settings', icon: Settings },
 ];
 
 function NavItemLink({ item, onClick }: { item: NavItem; onClick?: () => void }) {

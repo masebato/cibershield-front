@@ -33,7 +33,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
             </span>
           </div>
           <p className="text-xs text-slate-500 tracking-widest uppercase">
-            Security Operations Platform
+            Plataforma de operaciones de Seguridad
           </p>
         </div>
 
