@@ -13,9 +13,9 @@ const myProfile = {
 };
 
 const myElements = [
-  { id: 1, assets: 'https//prueba1.com' },
-  { id: 2, assets: 'https//prueba2.com' },
-  { id: 3, assets: 'https//prueba3.com' },
+  { id: 1, activo: 'https://prueba1.com', type:"IP", estado: 'Seguro' },
+  { id: 2, activo: 'https://prueba2.com', type:"IP", estado: 'Posible riesgo' },
+  { id: 3, activo: 'https://prueba3.com', type:"IP", estado: 'Riesgo' },
 ];
 
 interface MyProfileProps {
@@ -64,15 +64,17 @@ export default function MyProfile({ title }: MyProfileProps) {
         <table className="w-full text-center text-sm text-slate-300">
           <thead className="text-xs uppercase text-slate-400 border-b border-slate-700">
             <tr>
-              <th className="py-2 w-1/3">ID</th>
-              <th className="py-2 w-2/3">Assets</th>
+              <th className="py-2 w-1/4">ID</th>
+              <th className="py-2 w-1/4">Tipo</th>
+              <th className="py-2 w-2/4">Assets</th>
             </tr>
           </thead>
           <tbody>
             {myElements.map((el) => (
               <tr key={el.id} className="border-b border-slate-700">
                 <td className="py-2">{el.id}</td>
-                <td className="py-2">{el.assets}</td>
+                <td className="py-2">{el.type}</td>
+                <td className="py-2">{el.activo}</td>
               </tr>
             ))}
           </tbody>

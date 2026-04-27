@@ -6,6 +6,7 @@ import Login from '../pages/Login';
 import Dashboard from '../pages/Dashboard';
 import Placeholder from '../pages/Placeholder';
 import MyProfile from '../pages/MyProfile';
+import MyAssets from '../pages/MyAssets';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
@@ -48,7 +49,7 @@ export const router = createBrowserRouter([
     children: [
       { path: 'dashboard', element: <Dashboard /> },
       { path: 'threats', element: <Placeholder title="Alertas" /> },
-      { path: 'assets', element: <Placeholder title="Activos" /> },
+      { path: 'assets', element: <MyAssets title="Activos" /> },
       { path: 'reports', element: <Placeholder title="Reportes" /> },
       { path: 'settings', element: <MyProfile title="Mi perfil" /> },  
     ],

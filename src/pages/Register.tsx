@@ -158,8 +158,8 @@ export default function Register() {
           </Button>
         </form>
         <p className="mt-5 text-center text-xs text-slate-400">
-          ¿Ya tienes usuario?{' '} 
-          <span 
+          ¿Ya tienes usuario?{' '}
+          <span
             className="text-blue-700 underline cursor-pointer"
             onClick={() => navigate('/login')}
           >
