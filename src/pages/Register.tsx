@@ -8,6 +8,30 @@ import { Card } from '../components/ui/Card';
 import { useAuthStore } from '../store/useAuthStore';
 import { useState, useEffect } from 'react';
 
+interface FieldErrors {
+  password?: string;
+  companyName?: string;
+  email?: string;
+}
+
+function validateEmail(value: string): string | undefined {
+  if (!value) return 'El correo es requerido.';
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return 'Ingresa un correo válido.';
+}
+
+function validatePassword(value: string): string | undefined {
+  if (!value) return 'La contraseña es requerida.';
+  if (value.length < 8) return 'Debe tener al menos 8 caracteres.';
+  if (!/[A-Z]/.test(value)) return 'Debe incluir al menos una letra mayúscula.';
+  if (!/[0-9]/.test(value)) return 'Debe incluir al menos un número.';
+  if (!/[^A-Za-z0-9]/.test(value)) return 'Debe incluir al menos un carácter especial.';
+}
+
+function validateCompanyName(value: string): string | undefined {
+  if (!value.trim()) return 'El nombre de la empresa es requerido.';
+  if (value.trim().length < 2) return 'Debe tener al menos 2 caracteres.';
+}
+
 export default function Register() {
   const navigate = useNavigate();
   const { register, isLoading, error, isAuthenticated, clearError } = useAuthStore();
@@ -17,14 +41,36 @@ export default function Register() {
   const [email, setEmail] = useState('');
   const [sector, setSector] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState<FieldErrors>({});
+  const [touched, setTouched] = useState<Record<keyof FieldErrors, boolean>>({
+    password: false,
+    companyName: false,
+    email: false,
+  });
 
   useEffect(() => {
     if (isAuthenticated) navigate('/dashboard', { replace: true });
   }, [isAuthenticated, navigate]);
 
+  const touch = (field: keyof FieldErrors) =>
+    setTouched((prev) => ({ ...prev, [field]: true }));
+
+  const validate = (): FieldErrors => ({
+    password: validatePassword(password),
+    companyName: validateCompanyName(companyName),
+    email: validateEmail(email),
+  });
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     clearError();
+
+    const fieldErrors = validate();
+    setErrors(fieldErrors);
+    setTouched({ password: true, companyName: true, email: true });
+
+    if (Object.values(fieldErrors).some(Boolean)) return;
+
     const success = await register({
       password,
       email,
@@ -32,7 +78,7 @@ export default function Register() {
       sector: sector || undefined,
     });
     if (success) {
-      alert("Usuario registrado con exito")
+      alert('Usuario registrado con exito');
       navigate('/login');
     }
   };
@@ -53,13 +99,21 @@ export default function Register() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
           <Input
             label="Contraseña"
             type={showPassword ? 'text' : 'password'}
             placeholder="••••••••"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              if (touched.password) setErrors((prev) => ({ ...prev, password: validatePassword(e.target.value) }));
+            }}
+            onBlur={() => {
+              touch('password');
+              setErrors((prev) => ({ ...prev, password: validatePassword(password) }));
+            }}
+            error={touched.password ? errors.password : undefined}
             required
             leftIcon={<Lock size={15} />}
             rightElement={
@@ -80,18 +134,33 @@ export default function Register() {
             type="text"
             placeholder="Mi Empresa S.A."
             value={companyName}
-            onChange={(e) => setCompanyName(e.target.value)}
+            onChange={(e) => {
+              setCompanyName(e.target.value);
+              if (touched.companyName) setErrors((prev) => ({ ...prev, companyName: validateCompanyName(e.target.value) }));
+            }}
+            onBlur={() => {
+              touch('companyName');
+              setErrors((prev) => ({ ...prev, companyName: validateCompanyName(companyName) }));
+            }}
+            error={touched.companyName ? errors.companyName : undefined}
             required
             leftIcon={<Building2 size={15} />}
           />
 
-          
           <Input
-            label="Correo electronico"
+            label="Correo electrónico"
             type="email"
             placeholder="contact@company.com"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              if (touched.email) setErrors((prev) => ({ ...prev, email: validateEmail(e.target.value) }));
+            }}
+            onBlur={() => {
+              touch('email');
+              setErrors((prev) => ({ ...prev, email: validateEmail(email) }));
+            }}
+            error={touched.email ? errors.email : undefined}
             required
             autoComplete="email"
             leftIcon={<Mail size={15} />}
