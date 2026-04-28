@@ -4,7 +4,6 @@ import DashboardLayout from '../layouts/DashboardLayout';
 import Register from '../pages/Register';
 import Login from '../pages/Login';
 import Dashboard from '../pages/Dashboard';
-import Placeholder from '../pages/Placeholder';
 import MyProfile from '../pages/MyProfile';
 import MyAssets from '../pages/MyAssets';
 import MyAlerts from '../pages/MyAlerts';

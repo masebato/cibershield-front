@@ -56,6 +56,8 @@ export default function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 
+  const displayName = user?.email?.split('@')[0] ?? 'Usuario';
+
   const handleLogout = () => {
     logout();
     navigate('/login');
@@ -133,9 +135,9 @@ export default function DashboardLayout() {
               onClick={() => setUserMenuOpen((v) => !v)}
             >
               <div className="w-7 h-7 rounded-full bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-xs font-bold uppercase">
-                {user?.name?.[0] ?? 'U'}
+                {displayName[0] ?? 'U'}
               </div>
-              <span className="text-sm font-medium hidden sm:block">{user?.name}</span>
+              <span className="text-sm font-medium hidden sm:block">{displayName}</span>
               <ChevronDown size={14} className={`transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} />
             </button>
 
@@ -145,7 +147,7 @@ export default function DashboardLayout() {
                 onBlur={() => setUserMenuOpen(false)}
               >
                 <div className="px-3 py-2 border-b border-slate-700">
-                  <p className="text-xs font-medium text-slate-200 truncate">{user?.name}</p>
+                  <p className="text-xs font-medium text-slate-200 truncate">{displayName}</p>
                   <p className="text-xs text-slate-500 truncate">{user?.email}</p>
                 </div>
                 <button

@@ -1,28 +1,13 @@
 import { Card } from '../components/ui/Card';
-
-const myProfile = {
-  id: 1,
-  username: 'Carlos Usuga',
-  rol: 'viewer',
-  companyname: 'C y C Droguerias',
-  email: 'cycdroguerias@gmail.com',
-  publicIP: 'https://drogueriasCyC.com',
-  cidr: '192.168.1.0/24',
-  dominio: 'https://drogueriasCyC.com',
-  subdomino: 'https://drogueriasCyC.com/registros',
-};
-
-const myElements = [
-  { id: 1, activo: 'https://prueba1.com', type:"IP", estado: 'Seguro' },
-  { id: 2, activo: 'https://prueba2.com', type:"IP", estado: 'Posible riesgo' },
-  { id: 3, activo: 'https://prueba3.com', type:"IP", estado: 'Riesgo' },
-];
+import { useAuthStore } from '../store/useAuthStore';
 
 interface MyProfileProps {
   title: string;
 }
 
 export default function MyProfile({ title }: MyProfileProps) {
+  const { user } = useAuthStore();
+
   return (
     <div className="flex flex-col gap-6">
       <h1 className="text-xl font-semibold text-slate-100">{title}</h1>
@@ -39,22 +24,20 @@ export default function MyProfile({ title }: MyProfileProps) {
           />
           <div>
             <p className="text-lg font-semibold text-white">
-              {myProfile.username}
+              {user?.email.split('@')[0] ?? 'Usuario'}
             </p>
             <p className="text-sm text-slate-400">
-              {myProfile.companyname}
+              {user?.company_name ?? 'Empresa'}
             </p>
           </div>
         </div>
 
         {/* Derecha */}
         <div className="flex flex-col gap-6 text-sm text-slate-300">
-          {/* <p><span className="font-semibold">Rol:</span> {myProfile.rol}</p> */}
-          <p><span className="font-semibold">Email:</span> {myProfile.email}</p>
-          <p><span className="font-semibold">IP:</span> {myProfile.publicIP}</p>
-          <p><span className="font-semibold">CIDR:</span> {myProfile.cidr}</p>
-          <p><span className="font-semibold">Dominio:</span> {myProfile.dominio}</p>
-          <p><span className="font-semibold">Subdominio:</span> {myProfile.subdomino}</p>
+          <p><span className="font-semibold">Rol:</span> {user?.role ?? '-'}</p>
+          <p><span className="font-semibold">Email:</span> {user?.email ?? '-'}</p>
+          <p><span className="font-semibold">Empresa:</span> {user?.company_name ?? '-'}</p>
+          <p><span className="font-semibold">Sector:</span> {user?.sector ?? '-'}</p>
         </div>
       </Card>
 
@@ -70,13 +53,20 @@ export default function MyProfile({ title }: MyProfileProps) {
             </tr>
           </thead>
           <tbody>
-            {myElements.map((el) => (
+            {user?.assets.map((el) => (
               <tr key={el.id} className="border-b border-slate-700">
                 <td className="py-2">{el.id}</td>
-                <td className="py-2">{el.type}</td>
-                <td className="py-2">{el.activo}</td>
+                <td className="py-2 uppercase">{el.type}</td>
+                <td className="py-2">{el.value}</td>
               </tr>
             ))}
+            {!user?.assets.length && (
+              <tr>
+                <td colSpan={3} className="py-6 text-center text-slate-500">
+                  No hay activos registrados.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </Card>

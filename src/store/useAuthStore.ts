@@ -1,42 +1,30 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { AuthState, LoginCredentials, User } from '../types/auth.types';
-
-// Mock login
-async function mockLogin(credentials: LoginCredentials): Promise<{ user: User; token: string }> {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-
-  if (credentials.password !== 'admin123') {
-    throw new Error('Invalid credentials. Please check your email and password.');
-  }
-
-  return {
-    token: 'mock-jwt-token-' + Date.now(),
-    user: {
-      id: '1',
-      email: credentials.email,
-      name: credentials.email.split('@')[0],
-      role: 'admin',
-    },
-  };
-}
-
-// 🔹 Tipo de registro COMPLETO
-interface RegisterData {
-  username: string;
-  password: string;
-  companyName: string;
-  email: string;
-  publicIP: string;
-  cidr: string;
-  domain: string;
-  subdomain: string;
-}
+import {
+  createAssetRequest,
+  deleteAssetRequest,
+  getProfileRequest,
+  loginRequest,
+  logoutRequest,
+  registerRequest,
+} from '../services/cibershieldApi';
+import { clearTokens, saveTokens } from '../services/authStorage';
+import type {
+  Asset,
+  AssetType,
+  AuthState,
+  LoginCredentials,
+  RegisterData,
+  UserProfile,
+} from '../types/auth.types';
 
 interface AuthActions {
   login: (credentials: LoginCredentials) => Promise<void>;
   register: (data: RegisterData) => Promise<boolean>;
   logout: () => void;
+  setUserProfile: (profile: UserProfile) => void;
+  createAsset: (type: AssetType, value: string) => Promise<Asset>;
+  deleteAsset: (id: number) => Promise<void>;
   clearError: () => void;
 }
 
@@ -45,6 +33,7 @@ export const useAuthStore = create<AuthState & AuthActions>()(
     (set) => ({
       user: null,
       token: null,
+      refreshToken: null,
       isAuthenticated: false,
       isLoading: false,
       error: null,
@@ -52,35 +41,32 @@ export const useAuthStore = create<AuthState & AuthActions>()(
       login: async (credentials) => {
         set({ isLoading: true, error: null });
         try {
-          const { user, token } = await mockLogin(credentials);
-
-          if (credentials.rememberMe) {
-            localStorage.setItem('rememberMe', 'true');
-          } else {
-            localStorage.removeItem('rememberMe');
-          }
+          const { access_token, refresh_token } = await loginRequest(
+            credentials.email,
+            credentials.password,
+          );
+          saveTokens(access_token, refresh_token, credentials.rememberMe ?? false);
+          const profile = await getProfileRequest();
 
           set({
-            user,
-            token,
+            user: profile,
+            token: access_token,
+            refreshToken: refresh_token,
             isAuthenticated: true,
             isLoading: false,
           });
         } catch (err: unknown) {
-          const message = err instanceof Error ? err.message : 'An unexpected error occurred.';
+          clearTokens();
+          const message = err instanceof Error ? err.message : 'Error inesperado al iniciar sesión.';
           set({ error: message, isLoading: false });
         }
       },
 
-      // 🔹 REGISTRO COMPLETO
       register: async (data) => {
         set({ isLoading: true, error: null });
 
         try {
-          const userData = { ...data };
-
-          console.log('Registro terminado con los datos:', userData);
-
+          await registerRequest(data);
           set({ isLoading: false });
           return true;
         } catch (err: unknown) {
@@ -91,13 +77,47 @@ export const useAuthStore = create<AuthState & AuthActions>()(
       },
 
       logout: () => {
-        localStorage.removeItem('rememberMe');
+        const { refreshToken } = useAuthStore.getState();
+        if (refreshToken) {
+          void logoutRequest(refreshToken).catch(() => undefined);
+        }
+        clearTokens();
         set({
           user: null,
           token: null,
+          refreshToken: null,
           isAuthenticated: false,
           error: null,
         });
+      },
+
+      setUserProfile: (profile) => {
+        set({ user: profile, isAuthenticated: true });
+      },
+
+      createAsset: async (type, value) => {
+        const asset = await createAssetRequest({ type, value });
+        set((state) => ({
+          user: state.user
+            ? {
+                ...state.user,
+                assets: [asset, ...state.user.assets],
+              }
+            : state.user,
+        }));
+        return asset;
+      },
+
+      deleteAsset: async (id) => {
+        await deleteAssetRequest(id);
+        set((state) => ({
+          user: state.user
+            ? {
+                ...state.user,
+                assets: state.user.assets.filter((asset) => asset.id !== id),
+              }
+            : state.user,
+        }));
       },
 
       clearError: () => set({ error: null }),
@@ -112,6 +132,7 @@ export const useAuthStore = create<AuthState & AuthActions>()(
       partialize: (state) => ({
         user: state.user,
         token: state.token,
+        refreshToken: state.refreshToken,
         isAuthenticated: state.isAuthenticated,
       }),
     },
