@@ -32,7 +32,7 @@ export default function MyProfile({ title }: MyProfileProps) {
         {/* Izquierda */}
         <div className="flex flex-col items-center gap-4">
           <img
-            src="../../public/myprofile/userImage.png"
+            src="/myprofile/userImage.png"
             alt="Foto usuario"
             loading="lazy"
             className="w-50 h-50 rounded-full object-cover"

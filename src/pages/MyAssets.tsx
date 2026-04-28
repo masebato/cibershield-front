@@ -31,7 +31,7 @@ interface MyAssetsProps {
 }
 
 export default function MyAssets({ title }: MyAssetsProps) {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const { isLoading, isAuthenticated, error, clearError } = useAuthStore();
 
