@@ -10,6 +10,7 @@ import {
 } from '../services/cibershieldApi';
 import { clearTokens, saveTokens } from '../services/authStorage';
 import type {
+  ApiFieldError,
   Asset,
   AssetType,
   AuthState,
@@ -37,6 +38,7 @@ export const useAuthStore = create<AuthState & AuthActions>()(
       isAuthenticated: false,
       isLoading: false,
       error: null,
+      registerFieldErrors: null,
 
       login: async (credentials) => {
         set({ isLoading: true, error: null });
@@ -63,18 +65,22 @@ export const useAuthStore = create<AuthState & AuthActions>()(
       },
 
       register: async (data) => {
-        set({ isLoading: true, error: null });
+        set({ isLoading: true, error: null, registerFieldErrors: null });
 
         try {
           await registerRequest(data);
           set({ isLoading: false });
           return true;
         } catch (err: any) {
-          // const message = err instanceof Error ? err.message : 'Error en el registro';
-          // set({ error: message, isLoading: false });
+          const apiErrors: ApiFieldError[] = err.response?.data?.errors ?? [];
+          const message: string =
+            err.response?.data?.error ||
+            err.response?.data?.message ||
+            'Error en el registro.';
           set({
             isLoading: false,
-            error: err.response?.data?.message || 'Error en registro',
+            error: apiErrors.length ? null : message,
+            registerFieldErrors: apiErrors.length ? apiErrors : null,
           });
           return false;
         }
@@ -124,7 +130,7 @@ export const useAuthStore = create<AuthState & AuthActions>()(
         }));
       },
 
-      clearError: () => set({ error: null }),
+      clearError: () => set({ error: null, registerFieldErrors: null }),
     }),
     {
       name: 'cybershield-auth',

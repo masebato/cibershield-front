@@ -19,6 +19,12 @@ export interface UserProfile {
   assets: Asset[];
 }
 
+export interface ApiFieldError {
+  path: string;
+  message: string;
+  errorCode: string;
+}
+
 export interface AuthState {
   user: UserProfile | null;
   token: string | null;
@@ -26,6 +32,7 @@ export interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
+  registerFieldErrors: ApiFieldError[] | null;
 }
 
 export interface LoginCredentials {
