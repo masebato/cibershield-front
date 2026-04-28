@@ -32,6 +32,7 @@ export default function Register() {
       sector: sector || undefined,
     });
     if (success) {
+      alert("Usuario registrado con exito")
       navigate('/login');
     }
   };
@@ -84,6 +85,7 @@ export default function Register() {
             leftIcon={<Building2 size={15} />}
           />
 
+          
           <Input
             label="Correo electronico"
             type="email"

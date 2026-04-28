@@ -8,6 +8,15 @@ import { List, ChevronsLeftRightEllipsis, Trash2 } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import type { AssetType } from '../types/auth.types';
 
+// useEffect(() => {
+//   const fetchAssets = async () => {
+//     const res = await getAssetsRequest();
+//     setAssets(res.data);
+//   };
+
+//   fetchAssets();
+// }, []);
+
 interface MyAssetsProps {
   title: string;
 }

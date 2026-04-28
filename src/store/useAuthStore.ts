@@ -69,9 +69,13 @@ export const useAuthStore = create<AuthState & AuthActions>()(
           await registerRequest(data);
           set({ isLoading: false });
           return true;
-        } catch (err: unknown) {
-          const message = err instanceof Error ? err.message : 'Error en el registro';
-          set({ error: message, isLoading: false });
+        } catch (err: any) {
+          // const message = err instanceof Error ? err.message : 'Error en el registro';
+          // set({ error: message, isLoading: false });
+          set({
+            isLoading: false,
+            error: err.response?.data?.message || 'Error en registro',
+          });
           return false;
         }
       },
