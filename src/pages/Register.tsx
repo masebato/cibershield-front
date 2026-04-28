@@ -11,14 +11,10 @@ export default function Register() {
   const navigate = useNavigate();
   const { register, isLoading, error, isAuthenticated, clearError } = useAuthStore();
 
-  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [companyName, setCompanyName] = useState('');
   const [email, setEmail] = useState('');
-  const [publicIP, setPublicIP] = useState('');
-  const [cidr, setCidr] = useState('');
-  const [domain, setDomain] = useState('');
-  const [subdomain, setSubdomain] = useState('');
+  const [sector, setSector] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
@@ -29,17 +25,14 @@ export default function Register() {
     e.preventDefault();
     clearError();
     const success = await register({
-      username,
       password,
       companyName,
       email,
-      publicIP,
-      cidr,
-      domain,
-      subdomain,
+      sector
     });
     // console.log(success)
     if (success) {
+      alert("Usuario registrado con exito")
       navigate('/login');
     }
   };
@@ -61,7 +54,7 @@ export default function Register() {
         )}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <Input
+          {/* <Input
             label="Usuario"
             type="text"
             placeholder="Usuario"
@@ -69,6 +62,16 @@ export default function Register() {
             onChange={(e) => setUsername(e.target.value)}
             required
             leftIcon={<User size={15} />}
+          /> */}
+          <Input
+            label="Correo electronico"
+            type="email"
+            placeholder="contact@company.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            autoComplete="email"
+            leftIcon={<Mail size={15} />}
           />
 
           <Input
@@ -102,28 +105,18 @@ export default function Register() {
             leftIcon={<Server size={15} />}
           />
 
+          
           <Input
-            label="Correo electronico"
-            type="email"
-            placeholder="contact@company.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            autoComplete="email"
-            leftIcon={<Mail size={15} />}
-          />
-
-          <Input
-            label="IP publica"
+            label="Sector"
             type="text"
-            placeholder="203.0.113.5"
-            value={publicIP}
-            onChange={(e) => setPublicIP(e.target.value)}
+            placeholder="Fintech"
+            value={sector}
+            onChange={(e) => setSector(e.target.value)}
             required
             leftIcon={<Globe size={15} />}
           />
 
-          <Input
+          {/* <Input
             label="CIDR"
             type="text"
             placeholder="203.0.113.0/24"
@@ -131,9 +124,9 @@ export default function Register() {
             onChange={(e) => setCidr(e.target.value)}
             required
             leftIcon={<Globe size={15} />}
-          />
+          /> */}
 
-          <Input
+          {/* <Input
             label="Dominio"
             type="text"
             placeholder="example.com"
@@ -141,9 +134,9 @@ export default function Register() {
             onChange={(e) => setDomain(e.target.value)}
             required
             leftIcon={<Globe size={15} />}
-          />
+          /> */}
 
-          <Input
+          {/* <Input
             label="Subdominio"
             type="text"
             placeholder="api"
@@ -151,7 +144,7 @@ export default function Register() {
             onChange={(e) => setSubdomain(e.target.value)}
             required
             leftIcon={<Globe size={15} />}
-          />
+          /> */}
 
           <Button type="submit" size="lg" isLoading={isLoading} className="mt-2 w-full">
             {isLoading ? 'Registrando...' : 'Registrarse'}

@@ -6,6 +6,7 @@ import Select from '../components/ui/Select';
 import Input from '../components/ui/Input';
 import { List, ChevronsLeftRightEllipsis } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
+import { getAssetsRequest } from '../api/assets';
 
 const myProfile = {
   id: 1,
@@ -24,6 +25,15 @@ const myElements = [
   { id: 2, activo: 'https://prueba2.com', type: 'IP', estado: 'Posible riesgo' },
   { id: 3, activo: 'https://prueba3.com', type: 'IP', estado: 'Riesgo' },
 ];
+
+// useEffect(() => {
+//   const fetchAssets = async () => {
+//     const res = await getAssetsRequest();
+//     setAssets(res.data);
+//   };
+
+//   fetchAssets();
+// }, []);
 
 interface MyAssetsProps {
   title: string;

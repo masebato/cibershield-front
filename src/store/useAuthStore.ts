@@ -1,36 +1,34 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import type { AuthState, LoginCredentials, User } from '../types/auth.types';
+import { loginRequest, registerRequest } from '../api/auth';
+import { data } from 'react-router-dom';
 
 // Mock login
-async function mockLogin(credentials: LoginCredentials): Promise<{ user: User; token: string }> {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+// async function mockLogin(credentials: LoginCredentials): Promise<{ user: User; token: string }> {
+//   await new Promise((resolve) => setTimeout(resolve, 1000));
 
-  if (credentials.password !== 'admin123') {
-    throw new Error('Invalid credentials. Please check your email and password.');
-  }
+//   if (credentials.password !== 'admin123') {
+//     throw new Error('Invalid credentials. Please check your email and password.');
+//   }
 
-  return {
-    token: 'mock-jwt-token-' + Date.now(),
-    user: {
-      id: '1',
-      email: credentials.email,
-      name: credentials.email.split('@')[0],
-      role: 'admin',
-    },
-  };
-}
+//   return {
+//     token: 'mock-jwt-token-' + Date.now(),
+//     user: {
+//       id: '1',
+//       email: credentials.email,
+//       name: credentials.email.split('@')[0],
+//       role: 'admin',
+//     },
+//   };
+// }
 
 // 🔹 Tipo de registro COMPLETO
 interface RegisterData {
-  username: string;
   password: string;
   companyName: string;
   email: string;
-  publicIP: string;
-  cidr: string;
-  domain: string;
-  subdomain: string;
+  sector: string;
 }
 
 interface AuthActions {
@@ -52,23 +50,17 @@ export const useAuthStore = create<AuthState & AuthActions>()(
       login: async (credentials) => {
         set({ isLoading: true, error: null });
         try {
-          const { user, token } = await mockLogin(credentials);
+          const res = await loginRequest(credentials);
 
-          if (credentials.rememberMe) {
-            localStorage.setItem('rememberMe', 'true');
-          } else {
-            localStorage.removeItem('rememberMe');
-          }
+          localStorage.setItem('token', res.data.token);
 
           set({
-            user,
-            token,
+            user: res.data.user,
             isAuthenticated: true,
             isLoading: false,
           });
-        } catch (err: unknown) {
-          const message = err instanceof Error ? err.message : 'An unexpected error occurred.';
-          set({ error: message, isLoading: false });
+        } catch (err: any) {
+          set({ error: 'Credenciales incorrectas', isLoading: false });
         }
       },
 
@@ -77,15 +69,25 @@ export const useAuthStore = create<AuthState & AuthActions>()(
         set({ isLoading: true, error: null });
 
         try {
-          const userData = { ...data };
+          const res = await registerRequest(data);
 
-          console.log('Registro terminado con los datos:', userData);
+          set({
+            isLoading: false,
+            user: res.data,
+          });
+          // Prueba estatica
+          // const userData = { ...data };
+          // console.log('Registro terminado con los datos:', userData);
 
           set({ isLoading: false });
           return true;
-        } catch (err: unknown) {
-          const message = err instanceof Error ? err.message : 'Error en el registro';
-          set({ error: message, isLoading: false });
+        } catch (err: any) {
+          // const message = err instanceof Error ? err.message : 'Error en el registro';
+          // set({ error: message, isLoading: false });
+          set({
+            isLoading: false,
+            error: err.response?.data?.message || 'Error en registro',
+          });
           return false;
         }
       },
