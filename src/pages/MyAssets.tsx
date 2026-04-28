@@ -6,7 +6,6 @@ import Select from '../components/ui/Select';
 import Input from '../components/ui/Input';
 import { List, ChevronsLeftRightEllipsis } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
-import { useNavigate } from 'react-router-dom';
 
 const myProfile = {
   id: 1,
@@ -33,17 +32,23 @@ interface MyAssetsProps {
 export default function MyAssets({ title }: MyAssetsProps) {
   // const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const { isLoading, isAuthenticated, error, clearError } = useAuthStore();
+  const { clearError } = useAuthStore();
 
-  const [assets, setAssets] = useState('');
-  const [typeAssets, setTypeAssets] = useState('');
+  const [assets, setAssets] = useState<string>("");
+  const [typeAssets, setTypeAssets] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     clearError();
-    console.log(`Registro hecho => Tipo: ${typeAssets}, Activo: ${assets}`)
-    setIsModalOpen(false)
-  }
+    // console.log(`Registro hecho => Tipo: ${typeAssets}, Activo: ${assets}`)
+    await new Promise(resolver => setTimeout(resolver, 1500));
+
+    alert(`Se ha registrado el servicio con exito. \n Activo: ${assets}`)
+    setIsModalOpen(false);
+    setLoading(false);
+  };
 
   return (
     <div className="flex flex-col gap-6">
@@ -90,8 +95,8 @@ export default function MyAssets({ title }: MyAssetsProps) {
               leftIcon={<ChevronsLeftRightEllipsis size={15} />}
             />
 
-            <Button type="submit" size="lg" isLoading={isLoading} className="mt-2 w-full">
-              {isLoading ? 'Registrando...' : 'Registrar activo'}
+            <Button type="submit" size="lg" isLoading={loading} className="mt-2 w-full">
+              {loading ? 'Registrando...' : 'Registrar activo'}
             </Button>
           </form>
         </Modal>
