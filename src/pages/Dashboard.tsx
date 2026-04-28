@@ -55,25 +55,25 @@ export default function Dashboard() {
 
   const stats: StatCard[] = [
     {
-      label: 'Threats Detected',
+      label: 'Amenazas Detectadas',
       value: String(alerts.length),
       icon: AlertTriangle,
       color: 'text-amber-400',
     },
     {
-      label: 'Assets Monitored',
+      label: 'Activos Monitoreados',
       value: String(user?.assets.length ?? 0),
       icon: Server,
       color: 'text-cyan-400',
     },
     {
-      label: 'Security Score',
+      label: 'Puntuación de Seguridad',
       value: securityScore,
       icon: ShieldCheck,
       color: 'text-emerald-400',
     },
     {
-      label: 'Active Incidents',
+      label: 'Incidentes Activos',
       value: String(alerts.filter((alert) => !alert.read).length),
       icon: Activity,
       color: 'text-red-400',
@@ -91,10 +91,10 @@ export default function Dashboard() {
             </div>
             <div>
               <CardTitle>
-                Welcome back, {user?.email.split('@')[0] ?? 'Analyst'}
+                Bienvenido, {user?.email.split('@')[0] ?? 'Analista'}
               </CardTitle>
               <p className="text-sm text-slate-400 mt-0.5">
-                Here's your security operations overview.
+                Resumen de tus operaciones de seguridad.
               </p>
             </div>
           </div>
@@ -102,7 +102,7 @@ export default function Dashboard() {
         <CardContent>
           <div className="flex items-center gap-2 px-3 py-2 bg-cyan-500/5 border border-cyan-500/10 rounded-lg text-sm text-slate-400 w-fit">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            All systems operational
+            Todos los sistemas operativos
           </div>
         </CardContent>
       </Card>

@@ -41,7 +41,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
       </div>
 
       <p className="relative z-10 mt-8 text-xs text-slate-600">
-        &copy; {new Date().getFullYear()} CyberShield. All rights reserved.
+        &copy; {new Date().getFullYear()} CyberShield. Todos los derechos reservados.
       </p>
     </div>
   );
